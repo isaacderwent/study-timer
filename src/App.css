@@ -1,0 +1,654 @@
+/* ── CSS Variables ── */
+:root {
+  --bg: transparent;
+  --surface: rgba(12, 14, 26, 0.45);
+  --surface2: rgba(20, 22, 40, 0.55);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #e0e4f0;
+  --text-muted: #7a80a0;
+  --accent: #6c7bff;
+  --accent-hover: #8491ff;
+  --danger: #ff5c5c;
+  --danger-hover: #ff7878;
+  --success: #40c463;
+  --heat-0: rgba(30, 33, 51, 0.7);
+  --heat-1: #0e4429;
+  --heat-2: #006d32;
+  --heat-3: #26a641;
+  --heat-4: #39d353;
+  --radius: 12px;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --glass-blur: blur(16px);
+  --glass-bg: rgba(10, 12, 24, 0.48);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-x: hidden; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #06040f;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+button { cursor: pointer; font-family: inherit; }
+input { font-family: inherit; }
+
+/* ── Glass mixin (applied via shared class) ── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* ── App Layout ── */
+.app {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0 12px;
+}
+
+.app-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+}
+
+/* ── Two-column main layout ── */
+.app-main {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* Notepad column (left) — stretches to match the content column height */
+.notepad-column {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Content column (right) */
+.content-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+/* Settings row below both columns */
+.settings-row {
+  margin-top: 20px;
+}
+
+/* ── Daily Goal Bar ── */
+.daily-goal-bar {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+}
+
+.daily-goal-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.daily-goal-track {
+  background: rgba(255,255,255,0.07);
+  border-radius: 99px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.daily-goal-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--success));
+  border-radius: 99px;
+  transition: width 0.5s ease;
+  min-width: 0;
+}
+
+/* ── Tab Bar ── */
+.tab-bar {
+  display: flex;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius);
+  padding: 4px;
+  gap: 4px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(200, 208, 230, 0.72);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tab-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+}
+
+.tab-btn.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(108,123,255,0.35);
+}
+
+/* ── Timer Panel ── */
+.timer-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius);
+  padding: 40px 24px;
+}
+
+.timer-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ── Timer Display ── */
+.timer-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.timer-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.timer-digits {
+  font-size: 5rem;
+  font-weight: 700;
+  letter-spacing: -2px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(108,123,255,0.2);
+}
+
+/* ── Countdown click-to-edit ── */
+.countdown-edit {
+  display: flex;
+  align-items: baseline;
+  line-height: 1;
+}
+
+.countdown-digit-input {
+  /* Match .timer-digits exactly */
+  font-size: 5rem;
+  font-weight: 700;
+  letter-spacing: -2px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(108,123,255,0.2);
+  /* Input resets */
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid rgba(108, 123, 255, 0.25);
+  outline: none;
+  text-align: center;
+  width: 2.3ch;
+  padding: 0;
+  transition: border-color 0.15s;
+  cursor: text;
+}
+
+.countdown-digit-input:focus {
+  border-bottom-color: var(--accent);
+}
+
+.countdown-colon {
+  font-size: 5rem;
+  font-weight: 700;
+  letter-spacing: -2px;
+  color: var(--text);
+  line-height: 1;
+  padding: 0 1px;
+  user-select: none;
+}
+
+.countdown-colon-ss {
+  font-size: 5rem;
+  font-weight: 700;
+  letter-spacing: -2px;
+  color: var(--text-muted);
+  opacity: 0.4;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Phase Badge (Pomodoro) ── */
+.phase-badge {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 4px 12px;
+  border-radius: 99px;
+}
+
+.phase-badge.work {
+  background: rgba(108, 123, 255, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(108, 123, 255, 0.3);
+}
+
+.phase-badge.break {
+  background: rgba(64, 196, 99, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(64, 196, 99, 0.3);
+}
+
+.next-cycle-prompt {
+  font-size: 0.9rem;
+  color: var(--success);
+  background: rgba(64, 196, 99, 0.1);
+  border: 1px solid rgba(64, 196, 99, 0.25);
+  border-radius: 8px;
+  padding: 10px 18px;
+  text-align: center;
+}
+
+.cycle-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ── Countdown Inputs (legacy — kept for safety) ── */
+.countdown-inputs {
+  display: flex;
+  gap: 16px;
+}
+
+.countdown-inputs label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.countdown-inputs input {
+  width: 72px;
+  padding: 10px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.countdown-inputs input:focus {
+  border-color: var(--accent);
+  background: rgba(108,123,255,0.08);
+}
+
+/* ── Timer Controls ── */
+.timer-controls {
+  display: flex;
+  gap: 12px;
+}
+
+/* ── Buttons ── */
+.btn {
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 14px rgba(108,123,255,0.4);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 4px 20px rgba(108,123,255,0.55);
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+}
+
+.btn-secondary:hover { background: rgba(255,255,255,0.13); }
+
+.btn-danger {
+  background: rgba(255, 92, 92, 0.12);
+  color: var(--danger);
+  border: 1px solid rgba(255, 92, 92, 0.25);
+}
+
+.btn-danger:hover { background: rgba(255, 92, 92, 0.22); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+}
+
+.btn-ghost:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+
+/* ── Streak Badge ── */
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 99px;
+  padding: 6px 14px;
+}
+
+.streak-fire { font-size: 1.1rem; }
+
+.streak-count {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.streak-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ── Heatmap ── */
+.heatmap-section {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+}
+
+.section-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+}
+
+.heatmap-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
+  /* Hide the scrollbar visually — still scrollable via mouse/touch */
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE/Edge */
+}
+.heatmap-scroll::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+.heatmap-month-row {
+  display: grid;
+  column-gap: 2px;
+  margin-bottom: 4px;
+  height: 16px;
+}
+
+.heatmap-month-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 2px;
+}
+
+.heatmap-cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: rgba(30, 33, 51, 0.6);
+  transition: box-shadow 0.08s;
+  cursor: pointer;
+}
+
+.heatmap-cell.empty {
+  background: transparent;
+  cursor: default;
+}
+
+/* White highlight on hover */
+.heatmap-cell:not(.empty):hover {
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.7);
+  opacity: 1;
+}
+
+.heatmap-none { background: rgba(30, 33, 51, 0.6); }
+
+.heatmap-partial {
+  background: transparent;
+  border: 2px solid #40c463;
+}
+
+.heatmap-streak { background: #40c463; }
+
+.heatmap-star {
+  background: transparent;
+  border: none;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  line-height: 1;
+  color: #ffd700;
+  cursor: pointer;
+}
+
+.heatmap-star:hover {
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.7);
+}
+
+/* Today's cell — bold white outline */
+.heatmap-today {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.88) !important;
+}
+.heatmap-today:hover {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.88), 0 0 0 3.5px rgba(255, 255, 255, 0.22) !important;
+}
+
+.heatmap-tooltip {
+  position: fixed;
+  transform: translate(-50%, -100%);
+  background: rgba(10, 12, 28, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--text);
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  max-width: 220px;
+  white-space: normal;
+}
+
+.heatmap-tooltip-date {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.heatmap-tooltip-notes {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  opacity: 0.8;
+}
+
+.heatmap-tooltip-note-line {
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+/* ── Settings ── */
+.settings-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.settings-toggle {
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 0;
+  border: none;
+  font-size: 0.85rem;
+}
+
+.settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--glass-border);
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.setting-row:last-child { border-bottom: none; }
+
+.setting-label {
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.setting-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setting-input {
+  width: 72px;
+  padding: 6px 10px;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.setting-input:focus { border-color: var(--accent); }
+
+.setting-unit {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  min-width: 24px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .app-main {
+    flex-direction: column;
+  }
+  .notepad-column {
+    width: 100%;
+    position: static;
+    max-height: 300px;
+  }
+  .timer-digits,
+  .countdown-digit-input,
+  .countdown-colon {
+    font-size: 3.5rem;
+  }
+  .countdown-digit-input { width: 2.3ch; }
+  .btn { padding: 11px 22px; }
+  .app-title { font-size: 1.2rem; }
+}

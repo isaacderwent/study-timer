@@ -1,0 +1,132 @@
+/* ── NoteEditor ────────────────────────────────────────────────────── */
+.note-editor {
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Date bar shown when viewing a historical day */
+.note-date-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--glass-border);
+  flex-shrink: 0;
+}
+
+.note-viewing-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.note-today-btn {
+  font-size: 0.78rem;
+  padding: 4px 10px;
+}
+
+/* Toolbar */
+.note-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--glass-border);
+  flex-shrink: 0;
+}
+
+.note-tool {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  width: 30px;
+  height: 28px;
+  border-radius: 5px;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s, color 0.1s;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.note-tool:hover {
+  background: rgba(255, 255, 255, 0.10);
+  color: var(--text);
+}
+
+.note-tool-italic { font-style: italic; }
+.note-tool-underline { text-decoration: underline; }
+
+.note-tool-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--glass-border);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* Content editable area */
+.note-content {
+  flex: 1;
+  padding: 14px 16px;
+  outline: none;
+  color: var(--text);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  overflow-y: auto;
+  word-break: break-word;
+}
+
+/* Placeholder via CSS */
+.note-content:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Formatted content styling */
+.note-content ul,
+.note-content ol {
+  padding-left: 22px;
+  margin: 4px 0;
+}
+
+.note-content li {
+  margin: 2px 0;
+}
+
+.note-content b,
+.note-content strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.note-content i,
+.note-content em {
+  font-style: italic;
+}
+
+.note-content u {
+  text-decoration: underline;
+}
+
+/* Scrollbar styling */
+.note-content::-webkit-scrollbar {
+  width: 4px;
+}
+.note-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.note-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+.note-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
