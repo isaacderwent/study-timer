@@ -75,7 +75,7 @@ export function PixelBackground() {
         zIndex: -1,
         backgroundImage: `url(${src})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundPosition: 'top center',
         backgroundRepeat: 'no-repeat',
         opacity: weights[id],
         transition: 'opacity 90s linear',
