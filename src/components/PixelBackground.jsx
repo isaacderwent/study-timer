@@ -1,64 +1,56 @@
 import { useEffect, useState } from 'react';
-import pixelBg from '../assets/pixel-bg.jpg';
+import bgDay    from '../assets/bg-day.jpg';
+import bgNight  from '../assets/bg-night.jpg';
+import bgGolden from '../assets/bg-golden.jpg'; // used for both dawn and dusk
 
-// ── Scene definitions ─────────────────────────────────────────────────────────
-// The source image is a 2×2 grid; CSS background-size 200% 200% + position
-// lets us crop exactly one quadrant per layer.
-//
-//   Top-left  (0%   0%)  = Sunrise / dawn
-//   Top-right (100% 0%)  = Sunset / dusk
-//   Bottom-left (0% 100%) = Bright daytime
-//   Bottom-right (100% 100%) = Night
-//
+// ── Scenes ────────────────────────────────────────────────────────────────────
+// Three images; the golden-hour image is layered twice so it fades in from
+// both sides (night→golden→day and day→golden→night).
 const SCENES = [
-  { id: 'night',   bgPos: '100% 100%' },
-  { id: 'sunrise', bgPos: '0%   0%'   },
-  { id: 'day',     bgPos: '0%   100%' },
-  { id: 'sunset',  bgPos: '100% 0%'   },
+  { id: 'night',  src: bgNight  },
+  { id: 'golden', src: bgGolden },
+  { id: 'day',    src: bgDay    },
 ];
 
-// ── Time-based weight calculator ──────────────────────────────────────────────
-// Returns { night, sunrise, day, sunset } — exactly two scenes are ever
-// non-zero during transition windows; they sum to 1.0 at all times.
+// ── Time weights ──────────────────────────────────────────────────────────────
+// Returns { night, golden, day } each 0.0–1.0.
+// Only one or two scenes are ever non-zero (clean two-way crossfades).
 //
-// Schedule:
-//   Night fully on : h < 5  or  h >= 21
-//   Night → Sunrise: 5:00 – 6:30  (1.5 hr crossfade)
-//   Sunrise → Day  : 6:30 – 8:00  (1.5 hr crossfade)
-//   Day fully on   : 8:00 – 18:00
-//   Day → Sunset   : 18:00 – 19:30 (1.5 hr crossfade)
-//   Sunset → Night : 19:30 – 21:00 (1.5 hr crossfade)
+//  Night fully on  : h < 5  or  h >= 21
+//  Night → Golden  : 5:00  – 6:30   (1.5 hr)
+//  Golden → Day    : 6:30  – 8:00   (1.5 hr)
+//  Day fully on    : 8:00  – 18:00
+//  Day → Golden    : 18:00 – 19:30  (1.5 hr)
+//  Golden → Night  : 19:30 – 21:00  (1.5 hr)
 //
-function getSceneWeights() {
+function getWeights() {
   const h = new Date().getHours() + new Date().getMinutes() / 60;
   const clamp = t => Math.max(0, Math.min(1, t));
-  const w = { night: 0, sunrise: 0, day: 0, sunset: 0 };
+  const w = { night: 0, golden: 0, day: 0 };
 
   if (h < 5 || h >= 21) {
-    // Full night
     w.night = 1;
   } else if (h < 6.5) {
-    // Night → Sunrise  (5:00 – 6:30)
+    // Night → Golden
     const t = clamp((h - 5) / 1.5);
-    w.night   = 1 - t;
-    w.sunrise = t;
+    w.night  = 1 - t;
+    w.golden = t;
   } else if (h < 8) {
-    // Sunrise → Day  (6:30 – 8:00)
+    // Golden → Day
     const t = clamp((h - 6.5) / 1.5);
-    w.sunrise = 1 - t;
-    w.day     = t;
+    w.golden = 1 - t;
+    w.day    = t;
   } else if (h < 18) {
-    // Full day
     w.day = 1;
   } else if (h < 19.5) {
-    // Day → Sunset  (18:00 – 19:30)
+    // Day → Golden
     const t = clamp((h - 18) / 1.5);
     w.day    = 1 - t;
-    w.sunset = t;
+    w.golden = t;
   } else {
-    // Sunset → Night  (19:30 – 21:00)
+    // Golden → Night
     const t = clamp((h - 19.5) / 1.5);
-    w.sunset = 1 - t;
+    w.golden = 1 - t;
     w.night  = t;
   }
 
@@ -67,26 +59,24 @@ function getSceneWeights() {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export function PixelBackground() {
-  const [weights, setWeights] = useState(() => getSceneWeights());
+  const [weights, setWeights] = useState(() => getWeights());
 
-  // Re-evaluate every 60 s; CSS transition handles smooth blending
   useEffect(() => {
-    const id = setInterval(() => setWeights(getSceneWeights()), 60_000);
+    const id = setInterval(() => setWeights(getWeights()), 60_000);
     return () => clearInterval(id);
   }, []);
 
-  return SCENES.map(({ id, bgPos }) => (
+  return SCENES.map(({ id, src }) => (
     <div
       key={id}
       style={{
         position: 'fixed',
         inset: 0,
         zIndex: -1,
-        backgroundImage: `url(${pixelBg})`,
-        backgroundSize: '200% 200%',
-        backgroundPosition: bgPos,
+        backgroundImage: `url(${src})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
-        imageRendering: 'pixelated',
         opacity: weights[id],
         transition: 'opacity 90s linear',
       }}
